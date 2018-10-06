@@ -37,7 +37,7 @@ app.post('/', (req, res)=>{
         }}).then((response)=>{
             
              console.log(response);
-            res.send(response.data);
+            res.send(JSON.stringify(response.data));
         }).catch((err)=>{res.send(err)})}, 2000);
     
       ;
