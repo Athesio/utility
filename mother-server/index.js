@@ -13,12 +13,16 @@ app.use(cors());
 
 let PORT = process.env.PORT || 3069; 
 
-const image = 'fa917a185517'
+let awsImage = 'fa917a185517'
+let localImage = '9c27d1bad198'
+
+const image = 'fa917a185517';
 app.post('/', (req, res)=>{
 
     let portAss = Math.floor(Math.random()*5000);
     let code = req.body;
     let dockerPort = 3000+portAss;
+    console.log('req is', req.body);
     console.log('docker port is ', dockerPort);
     exec(`docker run -p ${dockerPort.toString()}:3000 ${image}`, (err, stdout)=>{
         console.log('cb invoked');
@@ -32,7 +36,7 @@ app.post('/', (req, res)=>{
       });
       setTimeout(()=>{
         console.log('sending request');
-        axios.post(`http://127.0.0.1:6192`, code, {headers: {
+        axios.post(`http://127.0.0.1:${dockerPort.toString()}`, code, {headers: {
             'Content-Type': 'text/plain'
         }}).then((response)=>{
             
