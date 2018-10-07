@@ -16,15 +16,16 @@ let PORT = process.env.PORT || 3069;
 let awsImage = 'fa917a185517'
 let localImage = '9c27d1bad198'
 
-const image = 'fa917a185517';
+const image = localImage;
 app.post('/', (req, res)=>{
 
     let portAss = Math.floor(Math.random()*5000);
     let code = req.body;
     let dockerPort = 3000+portAss;
+    let containerName = 'container'+dockerPort.toString();
     console.log('req is', req.body);
     console.log('docker port is ', dockerPort);
-    exec(`docker run -p ${dockerPort.toString()}:3000 ${image}`, (err, stdout)=>{
+    exec(`docker run --name ${containerName} -p ${dockerPort.toString()}:3000 ${image}`, (err, stdout)=>{
         console.log('cb invoked');
         if(err) {
           console.log('error is', err);
@@ -42,7 +43,10 @@ app.post('/', (req, res)=>{
             
              console.log(response);
             res.send(JSON.stringify(response.data));
-        }).catch((err)=>{res.send(err)})}, 2000);
+            exec(`docker stop ${containerName}`);
+        }).catch((err)=>{res.send(err)
+          exec(`docker stop ${containerName}`);
+        })}, 2000);
     
       ;
 })
